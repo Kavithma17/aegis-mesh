@@ -1,0 +1,58 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+
+# Maven wrapper/cache
+.mvn/timing.properties
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Test / coverage
+coverage/
+*.exec
+
+# Node / frontend
+node_modules/
+dist/
+build/
+
+# Python / AI services
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Local database/data volumes
+data/
+postgres-data/
+redis-data/
+kafka-data/

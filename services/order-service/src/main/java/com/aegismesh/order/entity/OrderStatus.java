@@ -1,8 +1,11 @@
 package com.aegismesh.order.entity;
 
 public enum OrderStatus {
-    CREATED,
+   CREATED,
     CONFIRMED,
-    CANCELLED,
+    FULFILLMENT_FAILED, 
+    PENDING_HEALING,    
+    HEALED,             
+    CANCELLED,          
     COMPLETED
 }

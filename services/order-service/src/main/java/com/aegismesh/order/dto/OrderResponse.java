@@ -1,17 +1,22 @@
 package com.aegismesh.order.dto;
 
 import com.aegismesh.order.entity.OrderStatus;
-
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record OrderResponse(
+
         UUID id,
+        String orderNumber,
         String customerId,
-        String pickupAddress,
         String deliveryAddress,
-        String packageDescription,
         OrderStatus status,
-        Instant createdAt
+        BigDecimal totalAmount,
+        List<OrderItemResponse> items,
+        Instant createdAt,
+        Instant updatedAt
+
 ) {
 }

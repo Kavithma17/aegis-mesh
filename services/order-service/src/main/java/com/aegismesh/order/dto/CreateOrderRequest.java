@@ -1,21 +1,21 @@
 package com.aegismesh.order.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+
+import java.util.List;
 
 public record CreateOrderRequest(
 
-        @NotBlank(message = "customerId is required")
+        @NotBlank(message = "Customer ID is required")
         String customerId,
 
-        @NotBlank(message = "pickupAddress is required")
-        String pickupAddress,
-
-        @NotBlank(message = "deliveryAddress is required")
+        @NotBlank(message = "Delivery address is required")
         String deliveryAddress,
 
-        @NotBlank(message = "packageDescription is required")
-        @Size(max = 500, message = "packageDescription must be at most 500 characters")
-        String packageDescription
+        @NotEmpty(message = "Order must contain at least one item")
+        List<@Valid OrderItemRequest> items
+
 ) {
 }

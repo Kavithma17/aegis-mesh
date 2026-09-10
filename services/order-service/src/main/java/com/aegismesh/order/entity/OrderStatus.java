@@ -1,8 +1,14 @@
 package com.aegismesh.order.entity;
 
 public enum OrderStatus {
+
     CREATED,
-    CONFIRMED,
-    CANCELLED,
-    COMPLETED
+
+    INVENTORY_PENDING,
+
+    INVENTORY_RESERVED,
+
+    INVENTORY_REJECTED,
+
+    CANCELLED
 }

@@ -14,5 +14,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  inventory-db:
+    image: postgres:16
+    container_name: aegismesh-inventory-postgres
+
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: aegismesh
+      POSTGRES_PASSWORD: aegismesh
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - inventory_postgres_data:/var/lib/postgresql/data
+
 volumes:
   postgres_data:
+  inventory_postgres_data:

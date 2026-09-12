@@ -55,4 +55,31 @@ public class InventoryStock {
     public int getAvailableQuantity() {
         return onHandQuantity - reservedQuantity;
     }
+    public boolean canReserve(int quantity) {
+    return getAvailableQuantity() >= quantity;
+}
+
+public void reserve(int quantity) {
+
+    if (!canReserve(quantity)) {
+        throw new IllegalStateException(
+                "Insufficient available inventory"
+        );
+    }
+
+    reservedQuantity += quantity;
+}
+
+public void release(int quantity) {
+
+    if (reservedQuantity < quantity) {
+        throw new IllegalStateException(
+                "Cannot release more inventory than reserved"
+        );
+    }
+
+    reservedQuantity -= quantity;
+}
+
+
 }

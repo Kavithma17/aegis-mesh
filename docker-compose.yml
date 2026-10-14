@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:16
     container_name: aegismesh-postgres
@@ -14,6 +15,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+
   inventory-db:
     image: postgres:16
     container_name: aegismesh-inventory-postgres
@@ -28,6 +30,15 @@ services:
 
     volumes:
       - inventory_postgres_data:/var/lib/postgresql/data
+
+
+  kafka:
+    image: apache/kafka:4.3.1
+    container_name: aegismesh-kafka
+
+    ports:
+      - "9092:9092"
+
 
 volumes:
   postgres_data:

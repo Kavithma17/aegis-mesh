@@ -1,4 +1,5 @@
 package com.aegismesh.order.service;
+
 import com.aegismesh.order.dto.CreateOrderRequest;
 import com.aegismesh.order.dto.OrderItemRequest;
 import com.aegismesh.order.dto.OrderItemResponse;
@@ -6,6 +7,9 @@ import com.aegismesh.order.dto.OrderResponse;
 import com.aegismesh.order.entity.Order;
 import com.aegismesh.order.entity.OrderItem;
 import com.aegismesh.order.entity.OrderStatus;
+import com.aegismesh.order.event.OrderCreatedEvent;
+import com.aegismesh.order.event.OrderItemEvent;
+import com.aegismesh.order.messaging.OrderEventPublisher;
 import com.aegismesh.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +28,7 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -53,6 +59,27 @@ public class OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
+
+        OrderCreatedEvent event =
+                new OrderCreatedEvent(
+                        UUID.randomUUID(),
+                        savedOrder.getId(),
+                        savedOrder.getOrderNumber(),
+                        savedOrder.getCustomerId(),
+                        savedOrder.getDeliveryAddress(),
+                        savedOrder.getItems()
+                                .stream()
+                                .map(item ->
+                                        new OrderItemEvent(
+                                                item.getSku(),
+                                                item.getQuantity()
+                                        )
+                                )
+                                .toList(),
+                        Instant.now()
+                );
+
+        orderEventPublisher.publishOrderCreated(event);
 
         return toResponse(savedOrder);
     }

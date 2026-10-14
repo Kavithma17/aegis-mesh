@@ -1,10 +1,11 @@
 services:
+
   postgres:
     image: postgres:16
     container_name: aegismesh-postgres
 
     environment:
-      POSTGRES_DB: order_db
+      POSTGRES_DB: request_db
       POSTGRES_USER: aegismesh
       POSTGRES_PASSWORD: aegismesh
 
@@ -14,12 +15,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+
   inventory-db:
     image: postgres:16
     container_name: aegismesh-inventory-postgres
 
     environment:
-      POSTGRES_DB: inventory_db
+      POSTGRES_DB: stock_db
       POSTGRES_USER: aegismesh
       POSTGRES_PASSWORD: aegismesh
 
@@ -28,6 +30,15 @@ services:
 
     volumes:
       - inventory_postgres_data:/var/lib/postgresql/data
+
+
+  kafka:
+    image: apache/kafka:4.3.1
+    container_name: aegismesh-kafka
+
+    ports:
+      - "9092:9092"
+
 
 volumes:
   postgres_data:

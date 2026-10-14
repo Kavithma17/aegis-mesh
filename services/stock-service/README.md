@@ -1,10 +1,10 @@
-# Aegis-Mesh Inventory Service
+# Aegis-Mesh Stock Service
 
-The **Inventory Service** manages warehouses, product stock, and inventory reservations inside the Aegis-Mesh platform.
+The **Stock Service** manages pharmacies, medicine stock, and stock reservations inside the Aegis-Mesh platform.
 
 Its main responsibility is to answer:
 
-> **Do we have enough stock for an order, and can we safely reserve it?**
+> **Does this pharmacy have enough of the requested medicines, and can we safely hold them for the patient?**
 
 The service owns its own PostgreSQL database and does not directly access data owned by other microservices.
 
@@ -12,18 +12,18 @@ The service owns its own PostgreSQL database and does not directly access data o
 
 ## Responsibilities
 
-The Inventory Service currently handles:
+The Stock Service currently handles:
 
-- Warehouse management
-- Stock management per warehouse
-- Product availability calculation
-- Inventory reservations
+- Pharmacy management
+- Medicine stock management per pharmacy
+- Medicine availability calculation
+- Stock reservations
 - Reservation rejection when stock is unavailable
 - Reservation release
 - Concurrency-safe stock reservation
 - Tracking reservation failure reasons
 
-The service does **not** currently handle order creation, payments, shipping, customer notifications, Saga orchestration, or AI recovery.
+The service does **not** handle creating medicine requests, notifications, or AI suggestions.
 
 Those responsibilities belong to other Aegis-Mesh services.
 
@@ -32,71 +32,71 @@ Those responsibilities belong to other Aegis-Mesh services.
 ## Architecture
 
 ```text
-                Inventory Service
+                  Stock Service
                      :8081
                        │
                        ▼
                   PostgreSQL
-                  inventory_db
+                   stock_db
                      :5434
 ```
 
-The Inventory Service owns all inventory-related information.
+The Stock Service owns all stock-related information.
 
 ```text
-Inventory Service
+Stock Service
 │
-├── Warehouse
-├── InventoryStock
-├── InventoryReservation
+├── Pharmacy
+├── MedicineStock
+├── StockReservation
 └── ReservationItem
 ```
 
 ---
 
-## Warehouse
+## Pharmacy
 
-A warehouse represents a physical location where products are stored.
+A pharmacy represents a physical location where medicines are stocked.
 
 Example:
 
 ```text
 Code:     CMB-01
-Name:     Colombo Central Warehouse
+Name:     Colombo City Pharmacy
 Location: Colombo
 Active:   true
 ```
 
-The same product can exist in multiple warehouses.
+The same medicine can exist in multiple pharmacies.
 
 ```text
-SKU: LAP-M4-16-256
+Medicine code: PARA-500
 
 CMB-01 → 10 units
 KDY-01 → 4 units
 GAL-01 → 7 units
 ```
 
-This allows Aegis-Mesh to eventually reroute fulfillment when one warehouse cannot satisfy an order.
+This lets Aegis-Mesh show a patient other pharmacies when one pharmacy cannot satisfy a request.
 
 ---
 
-## Inventory Stock
+## Medicine Stock
 
-`InventoryStock` represents the quantity of a particular product stored at a particular warehouse.
+`MedicineStock` represents the quantity of a particular medicine stocked at a particular pharmacy.
 
 Example:
 
 ```text
-Warehouse: CMB-01
-SKU:       LAP-M4-16-256
+Pharmacy:      CMB-01
+Medicine code: PARA-500
 
 onHandQuantity    = 10
 reservedQuantity  = 3
 availableQuantity = 7
 ```
 
-Available inventory is calculated as:
+Available stock is calculated as:
 
 ```text
 availableQuantity =
@@ -107,31 +107,31 @@ onHandQuantity - reservedQuantity
 
 | Field | Meaning |
 |---|---|
-| `onHandQuantity` | Physical quantity stored at the warehouse |
-| `reservedQuantity` | Quantity temporarily promised to active orders |
+| `onHandQuantity` | Physical quantity on the pharmacy's shelves |
+| `reservedQuantity` | Quantity temporarily held for active requests |
 | `availableQuantity` | Quantity that can still be reserved |
 
 `availableQuantity` is calculated rather than stored separately.
 
 ---
 
-## Inventory Reservations
+## Stock Reservations
 
-When an order requires products, the Inventory Service attempts to reserve the required stock.
+When a patient requests medicines, the Stock Service attempts to reserve the required stock.
 
 ```text
-Order requests
+Patient requests
 
-Laptop × 1
-Mouse  × 2
-
-      ↓
-
-Inventory Service
+Paracetamol × 1
+Amoxicillin × 2
 
       ↓
 
-Check warehouse stock
+Stock Service
+
+      ↓
+
+Check pharmacy stock
 
       ↓
 
@@ -148,18 +148,18 @@ RESERVED         REJECTED
 A reservation contains:
 
 ```text
-InventoryReservation
+StockReservation
 │
 ├── reservationNumber
-├── orderId
-├── warehouse
+├── requestId
+├── pharmacy
 ├── status
 ├── rejectionReason
 ├── createdAt
 ├── updatedAt
 │
 └── items
-    ├── sku
+    ├── medicineCode
     └── quantity
 ```
 
@@ -177,7 +177,7 @@ RELEASED
 
 ### `RESERVED`
 
-The requested inventory was successfully reserved.
+The requested medicines were successfully reserved.
 
 ### `REJECTED`
 
@@ -193,35 +193,35 @@ Available = 4
 The reservation can store a failure reason such as:
 
 ```text
-Insufficient stock for SKU LAP-M4-16-256 at warehouse CMB-01.
+Insufficient stock for medicine PARA-500 at pharmacy CMB-01.
 Requested=20, Available=4
 ```
 
 ### `RELEASED`
 
-Previously reserved inventory was returned to the available inventory pool.
+Previously reserved stock was returned to the available stock pool.
 
 ---
 
 ## Reservation Example
 
-Suppose the warehouse contains:
+Suppose the pharmacy contains:
 
 ```text
-Laptop
+Paracetamol
 
 onHand   = 10
 reserved = 2
 available = 8
 ```
 
-An order requests:
+A patient requests:
 
 ```text
-Laptop × 3
+Paracetamol × 3
 ```
 
-The Inventory Service checks:
+The Stock Service checks:
 
 ```text
 requested = 3
@@ -240,26 +240,26 @@ reserved = 5
 available = 5
 ```
 
-`onHandQuantity` remains unchanged because the products have not physically left the warehouse yet.
+`onHandQuantity` remains unchanged because the medicines have not physically left the pharmacy yet.
 
-They have only been reserved for the order.
+They have only been reserved for the patient's request.
 
 ---
 
 ## Releasing a Reservation
 
-Reserved stock can be released if the order cannot continue.
+Reserved stock can be released if the request cannot continue.
 
 For example:
 
 ```text
-Inventory reserved
+Stock reserved
        ↓
-Payment fails
+Patient cancels or does not pick up
        ↓
 Release reservation
        ↓
-Inventory becomes available again
+Stock becomes available again
 ```
 
 Before release:
@@ -278,37 +278,37 @@ reserved = 2
 available = 8
 ```
 
-This operation will later become part of the Aegis-Mesh **Saga compensation flow**.
+This operation will later be triggered automatically when a request is cancelled or a pickup hold expires.
 
 ---
 
 ## Concurrency Protection
 
-Inventory reservation must safely handle multiple requests arriving at the same time.
+Stock reservation must safely handle multiple requests arriving at the same time.
 
-Imagine that only one laptop is available:
+Imagine that only one pack of a medicine is available:
 
 ```text
-Available laptops = 1
+Available packs = 1
 ```
 
-Two orders arrive simultaneously.
+Two requests arrive simultaneously.
 
 Without concurrency protection:
 
 ```text
-Order A reads available = 1
-Order B reads available = 1
+Request A reads available = 1
+Request B reads available = 1
 
-Order A reserves 1
-Order B reserves 1
+Request A reserves 1
+Request B reserves 1
 ```
 
-That would create two reservations when only one laptop exists.
+That would create two reservations when only one pack exists.
 
 This problem is known as **overselling**.
 
-The Inventory Service prevents this using a pessimistic database lock:
+The Stock Service prevents this using a pessimistic database lock:
 
 ```java
 @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -317,9 +317,9 @@ The Inventory Service prevents this using a pessimistic database lock:
 Conceptually:
 
 ```text
-Order A
+Request A
    ↓
-Lock inventory row
+Lock stock row
    ↓
 Check availability
    ↓
@@ -329,7 +329,7 @@ Commit
    ↓
 Unlock
 
-Order B
+Request B
    ↓
 Wait for lock
    ↓
@@ -338,19 +338,19 @@ Read updated availability
 Reserve or reject
 ```
 
-This ensures two concurrent requests cannot reserve the same inventory incorrectly.
+This ensures two concurrent requests cannot reserve the same stock incorrectly.
 
 ---
 
 ## Lock Ordering
 
-Reservation items are sorted by SKU before database rows are locked.
+Reservation items are sorted by medicine code before database rows are locked.
 
 Example:
 
 ```text
-LAP-M4-16-256
-MOUSE-WL-001
+AMOX-250
+PARA-500
 ```
 
 This helps transactions acquire locks in a consistent order and reduces the risk of database deadlocks.
@@ -360,14 +360,14 @@ Without consistent lock ordering:
 ```text
 Transaction A
 
-locks Laptop
-waits for Mouse
+locks Paracetamol
+waits for Amoxicillin
 
 
 Transaction B
 
-locks Mouse
-waits for Laptop
+locks Amoxicillin
+waits for Paracetamol
 ```
 
 Both transactions could end up waiting for each other.
@@ -376,35 +376,35 @@ Both transactions could end up waiting for each other.
 
 ## Microservice Boundary
 
-The Inventory Service does not import or persist the Order Service's `Order` entity.
+The Stock Service does not import or persist the Request Service's `MedicineRequest` entity.
 
-Instead, a reservation stores only the order identifier:
+Instead, a reservation stores only the request identifier:
 
 ```java
-private UUID orderId;
+private UUID requestId;
 ```
 
 The relationship between the two services is therefore logical rather than a JPA relationship.
 
 ```text
-Order Service
+Request Service
      │
-     │ orderId
+     │ requestId
      ▼
-Inventory Service
+Stock Service
 ```
 
 Each service owns its own data.
 
 ```text
-Order Service
+Request Service
      ↓
-order_db
+request_db
 
 
-Inventory Service
+Stock Service
      ↓
-inventory_db
+stock_db
 ```
 
 This keeps the microservices independently deployable and prevents database-level coupling.
@@ -413,10 +413,10 @@ This keeps the microservices independently deployable and prevents database-leve
 
 # API Endpoints
 
-## Create Warehouse
+## Create Pharmacy
 
 ```http
-POST /api/inventory/warehouses
+POST /api/stock/pharmacies
 ```
 
 Example request:
@@ -424,17 +424,17 @@ Example request:
 ```json
 {
   "code": "CMB-01",
-  "name": "Colombo Central Warehouse",
+  "name": "Colombo City Pharmacy",
   "location": "Colombo"
 }
 ```
 
 ---
 
-## Get Warehouses
+## Get Pharmacies
 
 ```http
-GET /api/inventory/warehouses
+GET /api/stock/pharmacies
 ```
 
 ---
@@ -442,35 +442,35 @@ GET /api/inventory/warehouses
 ## Add or Update Stock
 
 ```http
-PUT /api/inventory/stocks
+PUT /api/stock/medicines
 ```
 
 Example request:
 
 ```json
 {
-  "warehouseCode": "CMB-01",
-  "sku": "LAP-M4-16-256",
-  "productName": "Laptop M4 16GB 256GB",
+  "pharmacyCode": "CMB-01",
+  "medicineCode": "PARA-500",
+  "medicineName": "Paracetamol 500mg",
   "onHandQuantity": 10
 }
 ```
 
 ---
 
-## Find Stock by SKU
+## Find Stock by Medicine
 
 ```http
-GET /api/inventory/stocks/{sku}
+GET /api/stock/medicines/{medicineCode}
 ```
 
 Example:
 
 ```http
-GET /api/inventory/stocks/LAP-M4-16-256
+GET /api/stock/medicines/PARA-500
 ```
 
-This endpoint can return availability across multiple warehouses.
+This endpoint can return availability across multiple pharmacies.
 
 Example:
 
@@ -482,39 +482,43 @@ GAL-01 → 7 available
 
 ---
 
-## Get Warehouse Stock
+## Get Pharmacy Stock
 
 ```http
-GET /api/inventory/warehouses/{warehouseCode}/stocks
+GET /api/stock/pharmacies/{pharmacyCode}/medicines
 ```
 
 Example:
 
 ```http
-GET /api/inventory/warehouses/CMB-01/stocks
+GET /api/stock/pharmacies/CMB-01/medicines
 ```
 
 ---
 
-## Create Reservation
+## Reservation Endpoints (not exposed yet)
+
+> **Note:** The reservation logic exists in `StockService` (`createReservation`, `getReservation`, `releaseReservation`), but `StockController` does not expose these endpoints yet. They are planned as follows.
+
+### Create Reservation
 
 ```http
-POST /api/inventory/reservations
+POST /api/stock/reservations
 ```
 
 Example request:
 
 ```json
 {
-  "orderId": "PUT-ORDER-UUID-HERE",
-  "warehouseCode": "CMB-01",
+  "requestId": "PUT-REQUEST-UUID-HERE",
+  "pharmacyCode": "CMB-01",
   "items": [
     {
-      "sku": "LAP-M4-16-256",
+      "medicineCode": "PARA-500",
       "quantity": 1
     },
     {
-      "sku": "MOUSE-WL-001",
+      "medicineCode": "AMOX-250",
       "quantity": 2
     }
   ]
@@ -533,29 +537,25 @@ Failed reservation:
 status = REJECTED
 ```
 
----
-
-## Get Reservation
+### Get Reservation
 
 ```http
-GET /api/inventory/reservations/{reservationNumber}
+GET /api/stock/reservations/{reservationNumber}
 ```
 
 Example:
 
 ```http
-GET /api/inventory/reservations/RES-A82D19FA
+GET /api/stock/reservations/RES-A82D19FA
 ```
 
----
-
-## Release Reservation
+### Release Reservation
 
 ```http
-PATCH /api/inventory/reservations/{reservationId}/release
+PATCH /api/stock/reservations/{reservationId}/release
 ```
 
-This returns previously reserved inventory to the available inventory pool.
+This returns previously reserved stock to the available stock pool.
 
 Example state transition:
 
@@ -569,7 +569,7 @@ RELEASED
 
 # Local Configuration
 
-The Inventory Service runs on:
+The Stock Service runs on:
 
 ```text
 http://localhost:8081
@@ -584,17 +584,17 @@ localhost:5434
 Database:
 
 ```text
-inventory_db
+stock_db
 ```
 
 Example `application.properties`:
 
 ```properties
-spring.application.name=inventory-service
+spring.application.name=stock-service
 
 server.port=8081
 
-spring.datasource.url=jdbc:postgresql://localhost:5434/inventory_db
+spring.datasource.url=jdbc:postgresql://localhost:5434/stock_db
 spring.datasource.username=aegismesh
 spring.datasource.password=aegismesh
 
@@ -621,10 +621,10 @@ Check the running containers:
 docker compose ps
 ```
 
-Move into the Inventory Service:
+Move into the Stock Service:
 
 ```bash
-cd services/inventory-service
+cd services/stock-service
 ```
 
 Run the tests:
@@ -672,7 +672,7 @@ Expected response:
 | Spring Web | REST API |
 | Spring Data JPA | Persistence layer |
 | Bean Validation | API request validation |
-| PostgreSQL | Inventory database |
+| PostgreSQL | Stock database |
 | Docker Compose | Local infrastructure |
 | Maven | Build and dependency management |
 | Lombok | Boilerplate reduction |
@@ -681,90 +681,83 @@ Expected response:
 
 # Current Workflow
 
-At the moment, the Order Service and Inventory Service operate independently.
+At the moment, the Request Service and Stock Service operate independently.
 
-The current flow is manual:
+The Request Service already publishes `aegis.medicine-request.created` events to Kafka, but the Stock Service does not consume them yet.
+
+The flow is therefore manual:
 
 ```text
-Create Order
+Create medicine request
      ↓
-Copy Order ID
+Copy request ID
      ↓
-Call Inventory Reservation API
+Reserve stock in the Stock Service
      ↓
-Reserve or reject inventory
+Reserve or reject
 ```
-
-The Inventory Service does not yet automatically receive orders.
 
 ---
 
-# Next Milestone: Apache Kafka
+# Next Milestone: Kafka Consumer
 
-The next milestone will introduce event-driven communication between the Order Service and Inventory Service.
-
-The flow will become:
+The next milestone makes the Stock Service react to medicine request events automatically.
 
 ```text
-Customer creates order
+Patient creates request
         ↓
-Order Service
+Request Service
         ↓
-OrderCreated
+aegis.medicine-request.created
         ↓
 Apache Kafka
         ↓
-Inventory Service
+Stock Service
         ↓
-Reserve inventory automatically
+Reserve stock automatically
         ↓
    ┌────┴────┐
    │         │
    ▼         ▼
-Inventory   Inventory
-Reserved    Rejected
+ Stock      Stock
+Reserved   Rejected
 ```
 
-This removes the need to manually copy an order ID and call the Inventory Service.
+This removes the need to copy a request ID manually.
 
 ---
 
 # Future Role in Aegis-Mesh
 
-The planned distributed workflow is:
+The planned workflow is:
 
 ```text
-Order Service
+Request Service
       ↓
 Kafka
       ↓
-Saga Orchestrator
+Stock Service
       ↓
-Inventory Service
-      ↓
-Payment Service
-      ↓
-Fulfillment Service
+Stock reserved → pickup hold with an expiry time
+Stock rejected → AI Advisor
 ```
 
-When inventory cannot be fulfilled normally:
+When a request cannot be met:
 
 ```text
-Inventory Rejected
+Stock Rejected
        ↓
-Saga detects failure
+AI Advisor
        ↓
-Recovery required
+Check other pharmacies (read only)
        ↓
-AI Recovery Agent
+Suggest medicines with the same active ingredient
        ↓
-Check alternative warehouses
+Pharmacist confirms
        ↓
-Evaluate safe recovery options
-       ↓
-Retry fulfillment or compensate
+Patient makes a new request
 ```
 
-The Inventory Service remains the **source of truth for stock and reservations**.
+The Stock Service remains the **source of truth for stock and reservations**.
 
-The future AI recovery layer will not modify inventory directly. It will only propose or request safe recovery actions through controlled service interfaces.
+The AI Advisor will never modify stock directly. It only suggests options, and every change still goes through the normal request and reservation flow.

@@ -5,7 +5,7 @@ services:
     container_name: aegismesh-postgres
 
     environment:
-      POSTGRES_DB: order_db
+      POSTGRES_DB: request_db
       POSTGRES_USER: aegismesh
       POSTGRES_PASSWORD: aegismesh
 
@@ -21,7 +21,7 @@ services:
     container_name: aegismesh-inventory-postgres
 
     environment:
-      POSTGRES_DB: inventory_db
+      POSTGRES_DB: stock_db
       POSTGRES_USER: aegismesh
       POSTGRES_PASSWORD: aegismesh
 

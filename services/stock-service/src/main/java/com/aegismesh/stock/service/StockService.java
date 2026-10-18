@@ -198,6 +198,26 @@ public class StockService {
     ) {
 
         /*
+         * Make reservation idempotent.
+         *
+         * Kafka delivers at least once, so the same request
+         * event can arrive twice. Return the existing
+         * reservation instead of reserving stock again.
+         */
+        Optional<StockReservation> existingReservation =
+                reservationRepository.findByRequestId(
+                        request.requestId()
+                );
+
+        if (existingReservation.isPresent()) {
+
+            return toReservationResponse(
+                    existingReservation.get()
+            );
+        }
+
+
+        /*
          * Prevent requests like:
          *
          * PARACETAMOL x 5

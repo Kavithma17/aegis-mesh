@@ -1,0 +1,177 @@
+/* Blue + white theme. Every color in the app comes from these tokens. */
+
+:root {
+  --blue-900: #0b2a5b;
+  --blue-700: #1d4ed8;
+  --blue-600: #2563eb;
+  --blue-500: #3b82f6;
+  --blue-100: #dbeafe;
+  --blue-50: #eff6ff;
+
+  --white: #ffffff;
+  --bg: #f7faff;
+  --text: #0f1e36;
+  --muted: #5b6b85;
+  --border: #e3eaf5;
+
+  --green: #16a34a;
+  --green-soft: #dcfce7;
+  --amber: #b45309;
+  --amber-soft: #fef3c7;
+
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(15, 30, 54, 0.08);
+  --container: 1120px;
+
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--white);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--blue-600);
+  color: var(--white);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--blue-700);
+}
+
+.btn-outline {
+  background: var(--white);
+  color: var(--blue-600);
+  border-color: var(--blue-100);
+}
+
+.btn-outline:hover {
+  background: var(--blue-50);
+}
+
+.btn-white {
+  background: var(--white);
+  color: var(--blue-700);
+}
+
+.btn-white:hover {
+  background: var(--blue-50);
+}
+
+/* ---------- Section headings ---------- */
+
+.section {
+  padding: 88px 0;
+}
+
+.section-head {
+  max-width: 640px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-600);
+  margin-bottom: 10px;
+}
+
+.section-head h2 {
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.section-head p {
+  color: var(--muted);
+  font-size: 17px;
+}
+
+/* ---------- Scroll reveal (see components/Reveal.jsx) ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
+}

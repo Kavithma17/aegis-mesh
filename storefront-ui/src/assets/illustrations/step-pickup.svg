@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" fill="none">
+  <rect width="240" height="150" rx="18" fill="#EFF6FF"/>
+  <circle cx="206" cy="122" r="16" fill="#DBEAFE"/>
+  <!-- counter -->
+  <rect x="26" y="96" width="188" height="30" rx="6" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2"/>
+  <rect x="26" y="96" width="188" height="8" rx="4" fill="#2563EB"/>
+  <!-- shelf -->
+  <rect x="40" y="24" width="96" height="58" rx="6" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2"/>
+  <path d="M44 53h88" stroke="#BFDBFE" stroke-width="2"/>
+  <rect x="50" y="32" width="10" height="16" rx="3" fill="#2563EB"/>
+  <rect x="66" y="35" width="10" height="13" rx="3" fill="#16A34A"/>
+  <rect x="82" y="31" width="10" height="17" rx="3" fill="#3B82F6"/>
+  <rect x="98" y="34" width="16" height="14" rx="3" fill="#F59E0B"/>
+  <rect x="50" y="60" width="16" height="16" rx="3" fill="#3B82F6"/>
+  <rect x="72" y="62" width="10" height="14" rx="3" fill="#2563EB"/>
+  <rect x="88" y="59" width="10" height="17" rx="3" fill="#16A34A"/>
+  <!-- bag -->
+  <path d="M150 58h44l-4 38h-36z" fill="#2563EB"/>
+  <path d="M162 58v-6a10 10 0 0 1 20 0v6" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+  <path d="M168 70h8v6h6v8h-6v6h-8v-6h-6v-8h6z" fill="#FFFFFF"/>
+</svg>

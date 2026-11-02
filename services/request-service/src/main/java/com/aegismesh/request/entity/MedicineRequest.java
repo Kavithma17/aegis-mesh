@@ -42,6 +42,19 @@ public class MedicineRequest {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
+    /*
+     * Filled in by the reservation saga.
+     *
+     * reservationNumber: the Stock Service reservation that
+     * holds stock for this request.
+     * statusReason: why stock was rejected, if it was.
+     */
+    @Column(length = 50)
+    private String reservationNumber;
+
+    @Column(length = 500)
+    private String statusReason;
+
     @OneToMany(
             mappedBy = "request",
             cascade = CascadeType.ALL,

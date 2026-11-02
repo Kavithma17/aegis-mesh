@@ -13,4 +13,8 @@ public interface StockReservationRepository
     Optional<StockReservation> findByReservationNumber(
             String reservationNumber
     );
+
+    Optional<StockReservation> findByRequestId(
+            UUID requestId
+    );
 }

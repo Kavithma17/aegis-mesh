@@ -13,6 +13,8 @@ public record MedicineRequestResponse(
         String patientId,
         String pharmacyCode,
         RequestStatus status,
+        String reservationNumber,
+        String statusReason,
         BigDecimal totalAmount,
         List<MedicineRequestItemResponse> items,
         Instant createdAt,

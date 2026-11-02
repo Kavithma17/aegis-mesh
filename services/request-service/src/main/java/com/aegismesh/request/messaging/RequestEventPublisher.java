@@ -1,5 +1,6 @@
 package com.aegismesh.request.messaging;
 
+import com.aegismesh.request.event.MedicineRequestCancelledEvent;
 import com.aegismesh.request.event.MedicineRequestCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -9,9 +10,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RequestEventPublisher {
 
-    private static final String REQUEST_CREATED_TOPIC =
-            "aegis.medicine-request.created";
-
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void publishRequestCreated(
@@ -19,7 +17,18 @@ public class RequestEventPublisher {
     ) {
 
         kafkaTemplate.send(
-                REQUEST_CREATED_TOPIC,
+                KafkaTopics.REQUEST_CREATED,
+                event.requestId().toString(),
+                event
+        );
+    }
+
+    public void publishRequestCancelled(
+            MedicineRequestCancelledEvent event
+    ) {
+
+        kafkaTemplate.send(
+                KafkaTopics.REQUEST_CANCELLED,
                 event.requestId().toString(),
                 event
         );

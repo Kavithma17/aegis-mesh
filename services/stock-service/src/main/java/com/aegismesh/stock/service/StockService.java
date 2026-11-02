@@ -418,6 +418,43 @@ public class StockService {
 
 
     // =========================================================
+    // RELEASE RESERVATION FOR A CANCELLED REQUEST (SAGA)
+    // =========================================================
+
+    /*
+     * Saga compensation, safe to run more than once.
+     *
+     * - No reservation yet: the cancel arrived before the
+     *   created event was handled. Nothing to release; the
+     *   Request Service compensates again if a late
+     *   reservation succeeds.
+     * - REJECTED: nothing was ever reserved.
+     * - RELEASED: releaseReservation returns early.
+     */
+    @Transactional
+    public void releaseReservationForRequest(
+            UUID requestId
+    ) {
+
+        Optional<StockReservation> reservation =
+                reservationRepository.findByRequestId(
+                        requestId
+                );
+
+        if (reservation.isEmpty()
+                || reservation.get().getStatus()
+                == ReservationStatus.REJECTED) {
+
+            return;
+        }
+
+        releaseReservation(
+                reservation.get().getId()
+        );
+    }
+
+
+    // =========================================================
     // RELEASE RESERVATION
     // =========================================================
 

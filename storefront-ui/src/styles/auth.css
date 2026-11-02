@@ -1,0 +1,488 @@
+/* =========================================================
+   Login + sign-up layout
+   ========================================================= */
+
+.auth {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.9fr) 1.1fr;
+  min-height: 100vh;
+  background: var(--white);
+}
+
+/* ---------- Blue brand panel ---------- */
+
+.auth-panel {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 44px;
+  overflow: hidden;
+  color: var(--white);
+  background: linear-gradient(160deg, var(--blue-600) 0%, var(--blue-900) 100%);
+}
+
+.auth-panel > * {
+  position: relative;
+}
+
+.auth-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.ring-a {
+  width: 420px;
+  height: 420px;
+  top: -180px;
+  right: -160px;
+}
+
+.ring-b {
+  width: 260px;
+  height: 260px;
+  bottom: -90px;
+  left: -90px;
+}
+
+.logo-light {
+  color: var(--white);
+}
+
+.logo-light .logo-mark {
+  background: var(--white);
+  color: var(--blue-600);
+}
+
+.auth-panel-body {
+  margin: auto 0;
+  padding: 32px 0;
+}
+
+.auth-image {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+}
+
+.auth-panel h2 {
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 1.2;
+  margin-bottom: 22px;
+  max-width: 400px;
+}
+
+.auth-points {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.92;
+}
+
+.auth-points .icon {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.auth-panel-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+/* ---------- Form side ---------- */
+
+.auth-main {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 48px;
+  background:
+    radial-gradient(circle at 100% 0%, var(--blue-50), transparent 40%),
+    var(--white);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.back-link:hover {
+  color: var(--blue-600);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  padding: 32px 0;
+  animation: rise 0.5s ease both;
+}
+
+.auth-head {
+  margin-bottom: 26px;
+}
+
+.auth-head h1 {
+  font-size: clamp(28px, 3.4vw, 34px);
+  letter-spacing: -0.02em;
+  color: var(--blue-900);
+  margin-bottom: 6px;
+}
+
+.auth-head p {
+  color: var(--muted);
+}
+
+.auth-form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.text-link {
+  color: var(--blue-600);
+  font-weight: 600;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+.auth-switch {
+  margin-top: 24px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.auth-switch a {
+  color: var(--blue-600);
+  font-weight: 700;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Role tabs ---------- */
+
+.role-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 6px;
+  margin-bottom: 24px;
+  border-radius: 14px;
+  background: var(--blue-50);
+}
+
+.role-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.role-tabs button.active {
+  background: var(--white);
+  color: var(--blue-700);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.12);
+}
+
+/* ---------- Fields ---------- */
+
+.field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue-900);
+  margin-bottom: 6px;
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.control-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.control input,
+.control select {
+  width: 100%;
+  padding: 12px 14px 12px 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--text);
+  font-size: 15px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.control select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235b6b85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+
+.control input::placeholder {
+  color: #9aa8bd;
+}
+
+.control input:focus,
+.control select:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 4px var(--blue-100);
+}
+
+.control:focus-within .control-icon {
+  color: var(--blue-600);
+}
+
+.has-error .control input,
+.has-error .control select {
+  border-color: #dc2626;
+}
+
+.has-error .control input:focus,
+.has-error .control select:focus {
+  box-shadow: 0 0 0 4px #fee2e2;
+}
+
+.field-error {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #dc2626;
+}
+
+.field-hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Password ---------- */
+
+.password-field .control input {
+  padding-right: 46px;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.toggle-visibility:hover {
+  background: var(--blue-50);
+  color: var(--blue-600);
+}
+
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.strength-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  flex: 1;
+}
+
+.strength-bars span {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--border);
+  transition: background 0.2s;
+}
+
+.strength small {
+  min-width: 64px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.strength-0 .on,
+.strength-1 .on {
+  background: #dc2626;
+}
+
+.strength-0 small,
+.strength-1 small {
+  color: #dc2626;
+}
+
+.strength-2 .on {
+  background: #f59e0b;
+}
+
+.strength-2 small {
+  color: var(--amber);
+}
+
+.strength-3 .on {
+  background: var(--blue-500);
+}
+
+.strength-3 small {
+  color: var(--blue-600);
+}
+
+.strength-4 .on {
+  background: var(--green);
+}
+
+.strength-4 small {
+  color: var(--green);
+}
+
+/* ---------- Checkbox ---------- */
+
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: var(--blue-600);
+  cursor: pointer;
+}
+
+/* ---------- Messages ---------- */
+
+.form-info,
+.form-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.form-info {
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.form-notice {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.form-info .icon,
+.form-notice .icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 900px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel {
+    position: relative;
+    height: auto;
+    padding: 24px 20px;
+  }
+
+  .auth-panel-body,
+  .auth-panel-foot {
+    display: none;
+  }
+
+  .auth-main {
+    padding: 20px 16px 40px;
+  }
+
+  .auth-card {
+    padding-top: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-tabs button {
+    font-size: 14px;
+    padding: 10px 6px;
+  }
+}

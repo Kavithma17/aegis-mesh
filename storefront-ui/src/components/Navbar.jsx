@@ -24,9 +24,14 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <a href="#top" className="btn btn-primary nav-cta" onClick={() => setOpen(false)}>
-            Find medicine
-          </a>
+          <div className="nav-auth">
+            <a href="#/login" className="btn btn-ghost" onClick={() => setOpen(false)}>
+              Log in
+            </a>
+            <a href="#/signup" className="btn btn-primary nav-cta" onClick={() => setOpen(false)}>
+              Sign up
+            </a>
+          </div>
         </nav>
 
         <button

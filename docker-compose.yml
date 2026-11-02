@@ -36,8 +36,43 @@ services:
     image: apache/kafka:4.3.1
     container_name: aegismesh-kafka
 
+    # Two doors into Kafka:
+    #   HOST     -> localhost:9092 for services run on your machine (mvn spring-boot:run)
+    #   INTERNAL -> kafka:19092 for other containers (Kafka UI)
+    # Setting any KAFKA_* variable replaces the image defaults, so the full config is listed.
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: HOST://0.0.0.0:9092,INTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,INTERNAL://kafka:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: HOST:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      # Single broker, so every internal topic keeps one copy
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
     ports:
       - "9092:9092"
+
+
+  kafka-ui:
+    image: kafbat/kafka-ui:v1.2.0
+    container_name: aegismesh-kafka-ui
+
+    environment:
+      KAFKA_CLUSTERS_0_NAME: aegis-mesh
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:19092
+
+    # 8080 is taken by the Request Service, so the UI is on http://localhost:8090
+    ports:
+      - "8090:8080"
+
+    depends_on:
+      - kafka
 
 
 volumes:

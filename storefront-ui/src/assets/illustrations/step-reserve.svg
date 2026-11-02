@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" fill="none">
+  <rect width="240" height="150" rx="18" fill="#EFF6FF"/>
+  <circle cx="34" cy="122" r="16" fill="#DBEAFE"/>
+  <!-- ticket -->
+  <path d="M44 34h152a8 8 0 0 1 8 8v18a14 14 0 0 0 0 28v18a8 8 0 0 1-8 8H44a8 8 0 0 1-8-8V88a14 14 0 0 0 0-28V42a8 8 0 0 1 8-8z" fill="#2563EB"/>
+  <path d="M150 42v76" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="5 6" opacity=".6"/>
+  <rect x="54" y="52" width="58" height="8" rx="4" fill="#FFFFFF" opacity=".9"/>
+  <rect x="54" y="68" width="80" height="12" rx="4" fill="#FFFFFF"/>
+  <rect x="54" y="90" width="44" height="6" rx="3" fill="#FFFFFF" opacity=".6"/>
+  <!-- check badge -->
+  <circle cx="177" cy="80" r="17" fill="#FFFFFF"/>
+  <path d="m169 80 6 6 11-12" stroke="#16A34A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

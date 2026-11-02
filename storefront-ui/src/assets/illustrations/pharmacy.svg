@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" fill="none">
+  <!-- background -->
+  <rect width="480" height="360" rx="28" fill="#EFF6FF"/>
+  <circle cx="392" cy="70" r="34" fill="#DBEAFE"/>
+  <path d="M40 92c18-14 44-14 62 0" stroke="#BFDBFE" stroke-width="6" stroke-linecap="round"/>
+  <path d="M70 70c14-10 30-10 44 0" stroke="#BFDBFE" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- ground -->
+  <rect x="24" y="300" width="432" height="10" rx="5" fill="#BFDBFE"/>
+
+  <!-- building -->
+  <rect x="96" y="110" width="288" height="192" rx="10" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="4"/>
+  <rect x="96" y="110" width="288" height="44" rx="10" fill="#1D4ED8"/>
+  <text x="240" y="139" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" letter-spacing="3">PHARMACY</text>
+
+  <!-- awning -->
+  <path d="M96 154h288l-10 30H106z" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="4" stroke-linejoin="round"/>
+  <g fill="#3B82F6">
+    <path d="M126 154h28l-3 30h-28z"/>
+    <path d="M182 154h28l-1 30h-28z"/>
+    <path d="M238 154h28l1 30h-28z"/>
+    <path d="M294 154h28l3 30h-28z"/>
+    <path d="M350 154h24l7 30h-24z"/>
+  </g>
+
+  <!-- cross sign -->
+  <circle cx="240" cy="78" r="30" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="4"/>
+  <path d="M232 62h16v8h8v16h-8v8h-16v-8h-8V70h8z" fill="#16A34A"/>
+  <path d="M240 108v2" stroke="#1D4ED8" stroke-width="4"/>
+
+  <!-- window with shelves -->
+  <rect x="120" y="200" width="120" height="84" rx="6" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="4"/>
+  <path d="M124 228h112M124 256h112" stroke="#1D4ED8" stroke-width="3"/>
+  <g>
+    <rect x="132" y="210" width="12" height="18" rx="3" fill="#3B82F6"/>
+    <rect x="150" y="214" width="12" height="14" rx="3" fill="#16A34A"/>
+    <rect x="168" y="208" width="12" height="20" rx="3" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2"/>
+    <rect x="186" y="212" width="12" height="16" rx="3" fill="#F59E0B"/>
+    <rect x="206" y="210" width="20" height="18" rx="4" fill="#1D4ED8"/>
+    <rect x="132" y="238" width="20" height="18" rx="4" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2"/>
+    <rect x="158" y="240" width="12" height="16" rx="3" fill="#3B82F6"/>
+    <rect x="176" y="236" width="12" height="20" rx="3" fill="#16A34A"/>
+    <rect x="194" y="240" width="12" height="16" rx="3" fill="#1D4ED8"/>
+    <rect x="212" y="238" width="14" height="18" rx="3" fill="#F59E0B"/>
+  </g>
+
+  <!-- door -->
+  <rect x="268" y="200" width="88" height="100" rx="6" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="4"/>
+  <rect x="280" y="212" width="64" height="46" rx="4" fill="#DBEAFE"/>
+  <circle cx="340" cy="270" r="4" fill="#1D4ED8"/>
+  <rect x="284" y="222" width="56" height="16" rx="8" fill="#16A34A"/>
+  <text x="312" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF">OPEN</text>
+
+  <!-- plants -->
+  <path d="M70 300c-4-30 6-52 20-62-2 22-6 42-12 62z" fill="#16A34A"/>
+  <path d="M78 300c2-26 16-40 30-44-8 18-16 32-22 44z" fill="#22C55E"/>
+  <rect x="60" y="284" width="34" height="18" rx="4" fill="#1D4ED8"/>
+  <path d="M410 300c4-30-6-52-20-62 2 22 6 42 12 62z" fill="#16A34A"/>
+  <path d="M402 300c-2-26-16-40-30-44 8 18 16 32 22 44z" fill="#22C55E"/>
+  <rect x="386" y="284" width="34" height="18" rx="4" fill="#1D4ED8"/>
+</svg>

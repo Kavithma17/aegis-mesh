@@ -198,6 +198,26 @@ public class StockService {
     ) {
 
         /*
+         * Make reservation idempotent.
+         *
+         * Kafka delivers at least once, so the same request
+         * event can arrive twice. Return the existing
+         * reservation instead of reserving stock again.
+         */
+        Optional<StockReservation> existingReservation =
+                reservationRepository.findByRequestId(
+                        request.requestId()
+                );
+
+        if (existingReservation.isPresent()) {
+
+            return toReservationResponse(
+                    existingReservation.get()
+            );
+        }
+
+
+        /*
          * Prevent requests like:
          *
          * PARACETAMOL x 5
@@ -393,6 +413,43 @@ public class StockService {
 
         return toReservationResponse(
                 savedReservation
+        );
+    }
+
+
+    // =========================================================
+    // RELEASE RESERVATION FOR A CANCELLED REQUEST (SAGA)
+    // =========================================================
+
+    /*
+     * Saga compensation, safe to run more than once.
+     *
+     * - No reservation yet: the cancel arrived before the
+     *   created event was handled. Nothing to release; the
+     *   Request Service compensates again if a late
+     *   reservation succeeds.
+     * - REJECTED: nothing was ever reserved.
+     * - RELEASED: releaseReservation returns early.
+     */
+    @Transactional
+    public void releaseReservationForRequest(
+            UUID requestId
+    ) {
+
+        Optional<StockReservation> reservation =
+                reservationRepository.findByRequestId(
+                        requestId
+                );
+
+        if (reservation.isEmpty()
+                || reservation.get().getStatus()
+                == ReservationStatus.REJECTED) {
+
+            return;
+        }
+
+        releaseReservation(
+                reservation.get().getId()
         );
     }
 

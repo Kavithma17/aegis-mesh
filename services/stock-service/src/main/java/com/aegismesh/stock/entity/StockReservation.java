@@ -33,9 +33,16 @@ public class StockReservation {
     )
     private String reservationNumber;
 
+    /*
+     * One reservation per medicine request.
+     *
+     * The unique constraint is the last line of defence
+     * when the same Kafka event is processed twice at once.
+     */
     @Column(
             name = "request_id",
-            nullable = false
+            nullable = false,
+            unique = true
     )
     private UUID requestId;
 
